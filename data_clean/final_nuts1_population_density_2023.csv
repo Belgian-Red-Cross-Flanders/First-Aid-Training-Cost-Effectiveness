@@ -1,0 +1,114 @@
+"country_name","nuts1","nuts1_name","population","density"
+"Belgique/België","BE1","Région de Bruxelles-Capitale/Brussels Hoofdstedelijk Gewest",1253178,7642
+"Belgique/België","BE2","Vlaams Gewest",6787969,497
+"Belgique/België","BE3","Région wallonne",3701649,218
+"Bulgaria","BG3","Severna i Yugoiztochna Bulgaria",3130130,47.6482960771597
+"Bulgaria","BG4","Yugozapadna i Yuzhna tsentralna Bulgaria",3317580,83.6998249326316
+"Crna Gora","ME0","Crna Gora",616695,45.3
+"Danmark","DK0","Danmark",5932654,316.699763444826
+"Deutschland","DE1","Baden-Württemberg",11167721,337.931326722793
+"Deutschland","DE2","Bayern",13105221,208.730070046129
+"Deutschland","DE3","Berlin",3632853,4320.5
+"Deutschland","DE4","Brandenburg",2545159,87.6
+"Deutschland","DE5","Bremen",695758,1754.8
+"Deutschland","DE6","Hamburg",1832675,2596.2
+"Deutschland","DE7","Hessen",6236933,408.607565962309
+"Deutschland","DE8","Mecklenburg-Vorpommern",1576049,70.6
+"Deutschland","DE9","Niedersachsen",7982947,181.205091503175
+"Deutschland","DEA","Nordrhein-Westfalen",17964420,626.72086309494
+"Deutschland","DEB","Rheinland-Pfalz",4108555,236.125135990634
+"Deutschland","DEC","Saarland",1011891,388.7
+"Deutschland","DED","Sachsen",4049967,225.724939857535
+"Deutschland","DEE","Sachsen-Anhalt",2150239,106.7
+"Deutschland","DEF","Schleswig-Holstein",2939283,190.2
+"Deutschland","DEG","Thüringen",2118830,130.9
+"Eesti","EE0","Eesti",1365884,31.3
+"Elláda","EL3","Attiki",3789105,1003.4
+"Elláda","EL4","Nisia Aigaiou, Kriti",1142900,67.4022659900254
+"Elláda","EL5","Voreia Elláda",2907302,73.0252209092829
+"Elláda","EL6","Kentriki Elláda",2562561,48.3875747738298
+"España","ES1","Noroeste",4293871,95.2824029878867
+"España","ES2","Noreste",4552028,172.052081072436
+"España","ES3","Comunidad de Madrid",6871903,853.9
+"España","ES4","Centro (ES)",5522095,25.778296860159
+"España","ES5","Este",14328064,236.689435886104
+"España","ES6","Sur",10304384,186.550290953831
+"España","ES7","Canarias",2213016,296.3
+"France","FR1","Ile-de-France",12407359,1037
+"France","FRB","Centre — Val de Loire",2581716,65.8
+"France","FRC","Bourgogne-Franche-Comté",2800234,60.4198582689875
+"France","FRD","Normandie",3339522,121.600403979971
+"France","FRE","Hauts-de-France",5990292,254.909203023826
+"France","FRF","Grand Est",5554472,134.184176497784
+"France","FRG","Pays de la Loire",3898424,120.8
+"France","FRH","Bretagne",3440248,125.3
+"France","FRI","Nouvelle-Aquitaine",6138814,76.4651795933221
+"France","FRJ","Occitanie",6121253,87.8100905157817
+"France","FRK","Auvergne-Rhône-Alpes",8196436,136.963234459465
+"France","FRL","Provence-Alpes-Côte d’Azur",5194349,165.9
+"France","FRM","Corse",354266,40.7
+"France","FRY","RUP FR — Régions Ultrapériphériques Françaises",2259825,352.168923257332
+"Hrvatska","HR0","Hrvatska",3850894,49.072495932903
+"Italia","ITC","Nord-Ovest",15858626,343.971262920256
+"Italia","ITF","Sud",13464669,261.954420060382
+"Italia","ITG","Isole",6392162,157.703147761274
+"Italia","ITH","Nord-Est",11558522,218.067364971058
+"Italia","ITI","Centro (IT)",11723222,242.297732167829
+"Kýpros","CY0","Kýpros",949084,100.6
+"Latvija","LV0","Latvija",1895239,29.7
+"Liechtenstein","LI0","Liechtenstein",39677,250
+"Lietuva","LT0","Lietuva",2857279,52.6192976254682
+"Luxembourg","LU0","Luxembourg",660809,252.6
+"Magyarország","HU1","Közép-Magyarország",2999794,1919.16321807431
+"Magyarország","HU2","Dunántúl",2900998,84.4040785964003
+"Magyarország","HU3","Alföld és Észak",3698952,76.6980714537523
+"Malta","MT0","Malta",542051,1696.8
+"Nederland","NL1","Noord-Nederland",1757677,211.226979132116
+"Nederland","NL2","Oost-Nederland",3762742,387.162432290069
+"Nederland","NL3","West-Nederland",8536295,1121.98177798448
+"Nederland","NL4","Zuid-Nederland",3754577,524.437238495841
+"Norge","NO0","Norge",5488984,8.06179612079357
+"Polska","PL2","Makroregion południowy",7564588,293.632140441753
+"Polska","PL4","Makroregion północno-zachodni",5986070,97.6275253881094
+"Polska","PL5","Makroregion południowo-zachodni",3710289,131.411003159053
+"Polska","PL6","Makroregion północny",5542322,106.053186426195
+"Polska","PL7","Makroregion centralny",3476118,119.369081371806
+"Polska","PL8","Makroregion wschodni",4994586,86.0174445289359
+"Polska","PL9","Makroregion województwo mazowieckie",5479763,354.376686436986
+"Portugal","PT1","Continente",10022426,385.9724088559
+"Portugal","PT2","Região Autónoma dos Açores",240125,103.9
+"Portugal","PT3","Região Autónoma da Madeira",254070,317.1
+"România","RO1","Macroregiunea Unu",4813126,70.8403122212051
+"România","RO2","Macroregiunea Doi",5577755,80.5789932329405
+"România","RO3","Macroregiunea Trei",5131103,626.438114183247
+"România","RO4","Macroregiunea Patru",3533244,59.0921502449307
+"Schweiz/Suisse/Svizzera","CH0","Schweiz/Suisse/Svizzera",8815385,375.921005004319
+"Serbia","RS1","Serbia - sever",3421684,NA
+"Serbia","RS2","Serbia - jug ",3219513,NA
+"Severna Makedonija ","MK0","Severna Makedonija ",1829954,73.7
+"Shqipëria","AL0","Shqipëria",2761785,141.614234199983
+"Slovenija","SI0","Slovenija",2116972,108.3376115036
+"Slovensko","SK0","Slovensko",5428792,137.856535487084
+"Suomi/Finland","FI1","Manner-Suomi",5533611,74.2317700322628
+"Suomi/Finland","FI2","Åland",30359,19.5
+"Sverige","SE1","Östra Sverige",4203672,235.159313857028
+"Sverige","SE2","Södra Sverige",4556857,77.1093448839847
+"Sverige","SE3","Norra Sverige",1761027,8.76561091908301
+"Türkiye","TR1","İstanbul",15907951,3059.2
+"Türkiye","TR2","Batı Marmara",3743485,89.5289330129545
+"Türkiye","TR3","Ege",10886803,206.376077623523
+"Türkiye","TR4","Doğu Marmara",8511450,177.763869610936
+"Türkiye","TR5","Batı Anadolu",8339470,177.428103824344
+"Türkiye","TR6","Akdeniz",11020550,129.983439338327
+"Türkiye","TR7","Orta Anadolu",4124939,45.7541100607791
+"Türkiye","TR8","Batı Karadeniz",4665938,75.3099965537476
+"Türkiye","TR9","Doğu Karadeniz",2690038,77.1
+"Türkiye","TRA","Kuzeydoğu Anadolu",2154748,31.6698662674243
+"Türkiye","TRB","Ortadoğu Anadolu",3928271,51.4359957345102
+"Türkiye","TRC","Güneydoğu Anadolu",9305910,134.35973933769
+"Éire/Ireland","IE0","Ireland",5271395,114.564179102496
+"Ísland","IS0","Ísland",387758,3.8
+"Österreich","AT1","Ostösterreich",4001720,2492.36134579631
+"Österreich","AT2","Südösterreich",1834182,72.2264077392538
+"Österreich","AT3","Westösterreich",3268870,108.444879178432
+"Česko","CZ0","Česko",10827529,456.056363007663
