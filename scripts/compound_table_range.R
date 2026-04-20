@@ -1,184 +1,192 @@
-library(readxl)
 library(dplyr)
 library(tidyr)
 library(gt)
 library(scales)
-library(openxlsx)
+library(here)
 
 #--------------------------------------------------
-# 1. File path
+# 0. SETTINGS
 #--------------------------------------------------
-file_path <- "C:/Users/MCASTRO/Rode Kruis-Vlaanderen/AH-Third Pillar Research Center - General/Paper 20 - First Aid/draft3_calculations.xlsx"
-out_dir <- dirname(file_path)
 
-wb   <- loadWorkbook(file_path)
-tbls <- getTables(wb, sheet = "Data 1%")
+low_cov  <- 0.0207
+high_cov <- 0.1035
 
-#--------------------------------------------------
-# 2. Read tables
-#--------------------------------------------------
-dalys_range <- names(tbls)[tbls == "DALYs_averted"]
-cost_range  <- names(tbls)[tbls == "Cost_per_DALY"]
+eff_levels   <- c(10, 20, 40, 60, 80, 100)
+share_levels <- c(0, 20, 40, 60, 80, 100)
 
-dalys_raw  <- read_excel(file_path, range = dalys_range)
-cost_raw_1 <- read_excel(file_path, sheet = "Data 1%", range = cost_range)
-cost_raw_3 <- read_excel(file_path, sheet = "Data 3%", range = cost_range)
 
 #--------------------------------------------------
-# 3. Reshape to long format
+# 1. READ DATA
 #--------------------------------------------------
-dalys_long <- dalys_raw %>%
-  pivot_longer(-1, names_to = "volunteer_share", values_to = "dalys") %>%
+
+dalys_low  <- readRDS(here("data_clean", paste0("dalys_raw", low_cov,  ".rds")))
+cost_low   <- readRDS(here("data_clean", paste0("cost_raw",  low_cov,  ".rds")))
+cost_high  <- readRDS(here("data_clean", paste0("cost_raw",  high_cov, ".rds")))
+
+#--------------------------------------------------
+# 2. LONG, NUMERIC ONLY
+#--------------------------------------------------
+
+dalys_long <- dalys_low$data %>%
+  pivot_longer(-1, names_to = "volunteer_share", values_to = "dalys_raw") %>%
   rename(volunteer_eff = 1) %>%
   mutate(
-    volunteer_eff  = volunteer_eff * 100,
+    volunteer_eff   = as.numeric(volunteer_eff),
     volunteer_share = as.numeric(gsub("%", "", volunteer_share))
   )
 
-cost_long_1 <- cost_raw_1 %>%
-  pivot_longer(-1, names_to = "volunteer_share", values_to = "cost_per_daly") %>%
+cost_low_long <- cost_low$data %>%
+  pivot_longer(-1, names_to = "volunteer_share", values_to = "cost_low") %>%
   rename(volunteer_eff = 1) %>%
   mutate(
-    volunteer_eff  = volunteer_eff * 100,
+    volunteer_eff   = as.numeric(volunteer_eff),
     volunteer_share = as.numeric(gsub("%", "", volunteer_share))
   )
 
-cost_long_3 <- cost_raw_3 %>%
-  pivot_longer(-1, names_to = "volunteer_share", values_to = "cost_3") %>%
+cost_high_long <- cost_high$data %>%
+  pivot_longer(-1, names_to = "volunteer_share", values_to = "cost_high") %>%
   rename(volunteer_eff = 1) %>%
   mutate(
-    volunteer_eff  = volunteer_eff * 100,
+    volunteer_eff   = as.numeric(volunteer_eff),
     volunteer_share = as.numeric(gsub("%", "", volunteer_share))
   )
 
 #--------------------------------------------------
-# 4. Build COST RANGE lookup (1% – 3%)
+# 3. MERGE & SNAP GRID
 #--------------------------------------------------
-cost_range_lookup <- cost_long_1 %>%
-  left_join(cost_long_3,
-            by = c("volunteer_eff", "volunteer_share")) %>%
-  filter(
-    volunteer_eff %% 20 == 0,
-    volunteer_share %% 20 == 0
+
+combined <- left_join(
+  dalys_long,
+  cost_low_long,
+  by = c("volunteer_eff", "volunteer_share")
+) %>%
+  left_join(.,  
+            cost_high_long, 
+            by = c("volunteer_eff", "volunteer_share"))
+
+#--------------------------------------------------
+# 4. RECOMPUTE EFFECTIVENESS & DALYs (AFTER SNAP)
+#--------------------------------------------------
+
+combined_10 <- combined %>%
+  mutate(
+    volunteer_eff   = round(volunteer_eff),
+    volunteer_share = round(volunteer_share),
+    dalys_raw = formatC(as.numeric(dalys_raw), format="f", digits=1, big.mark=","),
+    cost_low = paste0("€", formatC(as.numeric(cost_low), format="f", digits=0, big.mark=",")),
+    cost_high = paste0("€", formatC(as.numeric(cost_high), format="f", digits=0, big.mark=","))
   ) %>%
-  mutate(
-    volunteer_eff   = paste0(volunteer_eff, "%"),
-    volunteer_share = paste0(volunteer_share, "%"),
-    cost_range = ifelse(
-      volunteer_eff == "0%" & volunteer_share == "100%",
-      NA_character_,
-      paste0(
-        "€", comma(round(cost_per_daly, 0)),
-        "–€", comma(round(cost_3, 0))
-      )
-    )
-  ) %>%
-  select(volunteer_eff, volunteer_share, cost_range)
-
-#--------------------------------------------------
-# 5. Merge DALYs with NUMERIC cost (1% only)
-#    (this is the original, working structure)
-#--------------------------------------------------
-combined <- dalys_long %>%
-  left_join(
-    cost_long_1,
-    by = c("volunteer_eff", "volunteer_share")
-  )
-
-#--------------------------------------------------
-# 6. Subset to 20% intervals
-#--------------------------------------------------
-combined_20 <- combined %>%
   filter(
-    volunteer_eff %% 20 == 0,
-    volunteer_share %% 20 == 0
-  )
+    volunteer_eff %% 10 == 0,
+    volunteer_share %% 10 == 0
+  ) 
+
 
 #--------------------------------------------------
-# 7. Build long table EXACTLY like 1‑coverage code
+# 5. Build long table with two rows per cell
 #--------------------------------------------------
-table_long <- combined_20 %>%
+
+
+table_long <- combined_10 %>%
   pivot_longer(
-    cols = c(dalys, cost_per_daly),
+    cols = c(dalys_raw, cost_low),
     names_to = "metric",
     values_to = "value"
   ) %>%
   mutate(
     metric = recode(
       metric,
-      dalys = "DALYs averted",
-      cost_per_daly = "Cost per DALY"
+      dalys_raw = "DALYs averted",
+      cost_low  = "Cost per DALY"
     ),
+    
+    # enforce grid
+    volunteer_eff   = factor(volunteer_eff,   levels = eff_levels),
+    volunteer_share = factor(volunteer_share, levels = share_levels)
+  ) %>%
+  filter(
+    !is.na(volunteer_eff),
+    !is.na(volunteer_share)
+  ) %>%
+  mutate(
     volunteer_eff   = paste0(volunteer_eff, "%"),
-    volunteer_share = paste0(volunteer_share, "%")
-  )
+    volunteer_share = paste0(volunteer_share, "%"),
+    
+    # ------------------------------------------------
+    # FINAL FORMATTING (NO NUMBERS AFTER THIS)
+    # ------------------------------------------------
+    value = case_when(
+      metric == "DALYs averted" ~
+        formatC(
+          value,
+          format = "f",
+          digits = 1,
+          big.mark = ","
+        ),
+      
+      metric == "Cost per DALY" ~
+        paste0(value,
+          "–",
+          cost_high)
+    ),
+    
+    value = as.character(value)
+  ) %>%
+  select(-cost_high)   
+
+
 
 #--------------------------------------------------
-# 8. Pivot wide
+# 6. Pivot back to wide for gt
 #--------------------------------------------------
+
 table_wide <- table_long %>%
   pivot_wider(
-    names_from  = volunteer_share,
+    names_from = volunteer_share,
     values_from = value
-  )
-
-
-#--------------------------------------------------
-# 8.5 Convert ALL display columns to character
-#     (this is REQUIRED so cost ranges can be inserted)
-#--------------------------------------------------
-for (vs in setdiff(names(table_wide), c("metric", "volunteer_eff"))) {
-  table_wide[[vs]] <- as.character(table_wide[[vs]])
-}
-
+  ) 
 
 #--------------------------------------------------
-# 9. >>> REPLACE cost values WITH RANGES (KEY STEP)
+# 8. Create DALYs-only helper table (for coloring) - this is not working i think
 #--------------------------------------------------
 
-for (vs in unique(cost_range_lookup$volunteer_share)) {
-  
-  repl <- cost_range_lookup %>%
-    filter(volunteer_share == vs) %>%
-    arrange(volunteer_eff)
-  
-  table_wide[table_wide$metric == "Cost per DALY", vs] <- repl$cost_range
-}
-
-
-#--------------------------------------------------
-# 10. DALYs‑only helper table for colouring
-#--------------------------------------------------
-dalys_only <- table_wide %>%
+dalys_numeric <- table_wide %>%
   filter(metric == "DALYs averted") %>%
-  mutate(across(-c(metric, volunteer_eff), as.numeric))
+  select(-metric, -volunteer_eff) %>%
+  mutate(across(everything(), ~ as.numeric(gsub(",", "", .))))
 
-#--------------------------------------------------
-# 11. Build gt table
-#--------------------------------------------------
 
-format_dalys <- function(x) {
-  ifelse(
-    is.na(x),
-    NA_character_,
-    formatC(
-      as.numeric(x),
-      format = "f",
-      digits = 1,
-      big.mark = ",",
-      decimal.mark = "."
+# Same for cost_low helper (for coloring), alternative
+cost_low_numeric <- table_wide %>%
+  filter(metric == "Cost per DALY") %>%
+  select(-metric, -volunteer_eff) %>%
+  mutate(
+    across(
+      everything(),
+      ~ as.numeric(gsub("[^0-9.]", "", .))
     )
   )
-}
 
 
 
-for (vs in vol_cols) {
-  idx <- table_wide$metric == "DALYs averted"
-  table_wide[[vs]][idx] <- format_dalys(table_wide[[vs]][idx])
-}
+#--------------------------------------------------
+# 11. GT TABLE
+#--------------------------------------------------
 
-vol_cols <- setdiff(names(table_wide), c("metric", "volunteer_eff"))
+pal <- scales::col_numeric(
+  palette = c("#d73027", "#fee08b", "#1a9850"),
+  domain  = range(unlist(dalys_numeric), na.rm = TRUE)
+)
+pal_cost <- scales::col_numeric(
+  palette = c("#1a9850", "#fee08b", "#d73027"),
+  domain  = range(unlist(cost_high_numeric), na.rm = TRUE)
+)
+
+
+vol_cols <- setdiff(
+  names(table_wide),
+  c("metric", "volunteer_eff")
+)
 
 gt_table <- table_wide %>%
   gt(
@@ -192,48 +200,47 @@ gt_table <- table_wide %>%
     label = "Volunteer trainer share",
     columns = all_of(vol_cols)
   ) %>%
-  fmt_number(
-    rows = metric == "DALYs averted",
-    decimals = 1
-  )  %>%
   tab_source_note(
-    "Training 1–3% of the population of Belgium, assuming a maximum efficacy of 4.5% in first aid interventions at these training coverage values."
+    paste0(
+      "Training ",
+      sprintf("%.2f", low_cov * 100), "–",
+      sprintf("%.2f", high_cov * 100),
+      "% of the population of Belgium, assuming a maximum efficacy of 4.5% ",
+      "in first aid interventions at scenario-specific optimal coverage."
+    )
   )
 
 
-dalys_palette <- scales::col_numeric(
-  palette = c("#d73027", "#fee08b", "#1a9850"),
-  domain = range(
-    unlist(dalys_only %>% select(all_of(vol_cols))),
-    na.rm = TRUE
-  )
-)
+#--------------------------------------------------
+# 12. COLOUR DALYs
+#--------------------------------------------------
 
-for (col in vol_cols) {
-  
-  vals <- dalys_only[[col]]
-  
-  for (i in seq_along(vals)) {
+gt_table <- gt_table %>%
+  data_color(
+    # rows = metric == "DALYs averted",
+    rows = metric == "Cost per DALY",
+    columns = all_of(vol_cols),
+    # fn = function(x) {
+    #   pal(as.numeric(gsub(",", "", x)))
+    # }
     
-    gt_table <- gt_table %>%
-      tab_style(
-        style = cell_fill(color = dalys_palette(vals[i])),
-        locations = cells_body(
-          rows = (metric == "DALYs averted") &
-            (volunteer_eff == dalys_only$volunteer_eff[i]),
-          columns = all_of(col)
-        )
-      )
-  }
-}
+    fn = function(x) {
+      pal_cost(as.numeric(gsub("[^0-9.]", "", x)))
+    }
+    
+  )
+
 
 
 #--------------------------------------------------
-# 12. Export
+# 13. EXPORT
 #--------------------------------------------------
+
 gtsave(
   gt_table,
-  filename = "compound_DALYs_costs_range_1_3.png",
-  path = out_dir,
+  filename = paste0(
+    "compound_DALYs_costs_range_", low_cov, "_", high_cov, ".png"
+  ),
+  path = here("outputs", "figures"),
   zoom = 2
 )
