@@ -34,7 +34,7 @@ trainer_efficacy <- 1.0  # paid trainers = 100%
 sessions_per_training <- course_hours / session_hours
 
 
-coverage <- 0.0357  # 2%, can be vector later
+coverage <- 0.0207
 
 covered_population <- population * coverage
 n_trainings <- covered_population / trainees_per_training
@@ -107,7 +107,7 @@ saveRDS(
     data = dalys_raw,
     coverage = coverage
   ),
-  file = "data_clean/dalys_raw.rds"
+  file = paste0("data_clean/dalys_raw", coverage, ".rds")
 )
 
 saveRDS(
@@ -115,7 +115,7 @@ saveRDS(
     data = cost_raw,
     coverage = coverage
   ),
-  file = "data_clean/cost_raw.rds"
+  file = paste0("data_clean/cost_raw", coverage, ".rds")
 )
 
 
