@@ -1,0 +1,14 @@
+# R / RStudio
+*.Rhistory
+*.RData
+*.Rproj.user/
+*.Rproj
+
+# Archive folder
+archive/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+README.html

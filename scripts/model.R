@@ -22,11 +22,11 @@ YLDs_max_averted  <- YLDs_RTI  * clinical_effect
 
 # Training system
 ## Training system parameters
-trainees_per_training <- 20
+trainees_per_training <- 15
 
 coord_cost_per_session <- 10      # EUR
 session_hours          <- 3
-course_hours           <- 15
+course_hours           <- 12
 trainer_wage_hour      <- 27      # EUR/hour # 55
 
 trainer_efficacy <- 1.0  # paid trainers = 100%
@@ -34,7 +34,7 @@ trainer_efficacy <- 1.0  # paid trainers = 100%
 sessions_per_training <- course_hours / session_hours
 
 
-coverage <- 0.1035#0.0207
+coverage <- 0.0207# 0.1035
 
 covered_population <- population * coverage
 n_trainings <- covered_population / trainees_per_training
@@ -49,10 +49,12 @@ paid_trainer_costs <- total_hours * trainer_wage_hour
 volunteer_share <- seq(0, 1, by = 0.05)        # 0–100% volunteer hours
 volunteer_eff   <- seq(0, 1, by = 0.05)        # 0–100% relative efficacy
 
+
 grid <- expand.grid(
   volunteer_eff  = volunteer_eff,
   volunteer_share = volunteer_share
 )
+
 
 # Equations: training efficacy, DALYs averted, training cost, cost per DALY averted
 grid <- grid %>%
@@ -76,6 +78,20 @@ grid <- grid %>%
     )
     
   )
+
+# ================================
+# Total training cost table
+# (at fixed coverage)
+# ================================
+
+# Create cost table by volunteer share only
+cost_table <- grid %>%
+  dplyr::distinct(volunteer_share, training_cost) %>%   # cost is invariant to effectiveness
+  dplyr::mutate(
+    volunteer_share_pct = volunteer_share * 100,
+    training_cost_million = training_cost / 1e6
+  ) %>%
+  dplyr::arrange(volunteer_share_pct)
 
 # DALYs table
 dalys_raw <- grid %>%

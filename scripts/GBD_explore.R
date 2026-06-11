@@ -1,6 +1,5 @@
 # ============================================================
 #   Global Burden of Disease – Cause-specific DALY plots
-#   FINAL CLEAN WORKING VERSION
 # ============================================================
 
 library(tidyverse)

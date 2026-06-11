@@ -72,7 +72,7 @@ combined_10 <- combined %>%
   mutate(
     volunteer_eff   = round(volunteer_eff),
     volunteer_share = round(volunteer_share),
-    dalys_raw = formatC(as.numeric(dalys_raw), format="f", digits=1, big.mark=","),
+    dalys_raw = formatC(as.numeric(dalys_raw), format="f", digits=0, big.mark=","),
     cost_low = paste0("€", formatC(as.numeric(cost_low), format="f", digits=0, big.mark=",")),
     cost_high = paste0("€", formatC(as.numeric(cost_high), format="f", digits=0, big.mark=","))
   ) %>%
@@ -157,15 +157,21 @@ dalys_numeric <- table_wide %>%
 
 
 # Same for cost_low helper (for coloring), alternative
+
 cost_low_numeric <- table_wide %>%
   filter(metric == "Cost per DALY") %>%
   select(-metric, -volunteer_eff) %>%
   mutate(
     across(
       everything(),
-      ~ as.numeric(gsub("[^0-9.]", "", .))
+      ~ as.numeric(
+        gsub(",", "",                # remove thousands separators
+             sub("€([^–]+)–.*", "\\1", .)  # keep only €LOW part
+        )
+      )
     )
   )
+
 
 
 
@@ -179,7 +185,7 @@ pal <- scales::col_numeric(
 )
 pal_cost <- scales::col_numeric(
   palette = c("#1a9850", "#fee08b", "#d73027"),
-  domain  = range(unlist(cost_high_numeric), na.rm = TRUE)
+  domain  = range(unlist(cost_low_numeric), na.rm = TRUE)
 )
 
 
@@ -224,9 +230,17 @@ gt_table <- gt_table %>%
     #   pal(as.numeric(gsub(",", "", x)))
     # }
     
+    
     fn = function(x) {
-      pal_cost(as.numeric(gsub("[^0-9.]", "", x)))
+      pal_cost(
+        as.numeric(
+          gsub(",", "",
+               sub("€([^–]+)–.*", "\\1", x)
+          )
+        )
+      )
     }
+    
     
   )
 
