@@ -18,12 +18,7 @@ The repository is organized as follows:
 ## Requirements
 The project is written in R.
 Required packages:
-library(ggplot2)
-library(here)
-library(dplyr)
-library(tidyr)
-library(eurostat)
-library(sf)
+ggplot2, here, dplyr, tidyr, eurostat, sf
 
 ## Model
 
