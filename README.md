@@ -37,9 +37,9 @@ across combinations of:
 To reproduce results:
 
 
-Run data preprocessing:eu_nuts_density_pop.R
-Run main model script (coverage-specific):model_main.R
-Generate tables:table_generation.R
+- Run data preprocessing:eu_nuts_density_pop.R
+- Run main model script (coverage-specific):model_main.R
+- Generate tables:table_generation.R
 
 All data sources are public (GBD, Eurostat, Statbel)
 
@@ -68,8 +68,8 @@ data_clean/final_nuts1_population_density_2023.csv
 The model generates:
 ### 1. DALYs averted table
 
-Rows: volunteer effectiveness
-Columns: volunteer share
+- Rows: volunteer effectiveness
+- Columns: volunteer share
 
 Saved as:
 ```
@@ -78,7 +78,7 @@ data_clean/dalys_raw{coverage}.rds
 
 ### 2. Cost per DALY table
 
-Same structure as DALYs table
+Same structure as DALYs table. 
 
 Saved as:
 ```
